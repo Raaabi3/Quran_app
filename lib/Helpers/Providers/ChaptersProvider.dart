@@ -12,9 +12,7 @@ class ChaptersProvider with ChangeNotifier {
   Future<void> fetchChapters() async {
     final response = await fetchChaptersService();
     try {
-      debugPrint('Response Body: ${response.body}');
       if (response.statusCode == 200) {
-        print("succcess");
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
         if (jsonData.containsKey('chapters')) {
           chaptersModel = ChaptersModel(

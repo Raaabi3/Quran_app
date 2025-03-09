@@ -4,8 +4,12 @@ class Apilinks {
   static const String key ="7898dda645msh8320c2b9f9d8bfdp1b6086jsne1c2ffa06c1a";
   static const String ressources = "/resources";
   static const String languages = "$baseurl/resources/languages";
-  static const String randomVerses = "$baseurl/verses/random";
+  static String verses(int page) => "$baseurl/verses/by_page/$page";
   static const String chapters = "$baseurl/chapters";
+  static const String verse = "$baseurl/quran/verses/imlaei?verse_key=";
+
+
+
 
   
 }

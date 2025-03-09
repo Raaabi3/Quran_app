@@ -15,7 +15,8 @@ class QuranHomeScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          chaptersProvider.fetchChapters();
+          //chaptersProvider.fetchChapters();
+          versesProvider.fetchVerseByKey("2:1");
         },
         child: const Icon(Icons.refresh),
       ),
@@ -26,7 +27,10 @@ class QuranHomeScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final chapter = chaptersProvider.chaptersModel.chapters[index];
             return ListTile(
-              title: Text(chapter.nameArabic ?? 'No chapter name'),
+              onTap: (){
+              versesProvider.fetchVersesByPage(chapter.pages[0]);
+              },
+              title: Text(chapter.nameArabic + " verse:" + chapter.pages.toString() ?? 'No chapter name'),
             );
           },
         ),

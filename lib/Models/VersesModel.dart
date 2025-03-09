@@ -1,13 +1,22 @@
-import 'package:quran_app/Models/VerseModel.dart';
+import 'VerseModel.dart';
+import 'PaginationModel.dart';
 
-class Versesmodel {
-  List<VerseModel> verses;
+class VersesResponseModel {
+  final List<VerseModel> verses;
+  final PaginationModel pagination;
 
-  Versesmodel({required this.verses});
+  VersesResponseModel({
+    required this.verses,
+    required this.pagination,
+  });
 
-  factory Versesmodel.fromJson(List<dynamic> jsonList) {
-    return Versesmodel(
-      verses: jsonList.map((data) => VerseModel.fromMap(data)).toList(),
+  factory VersesResponseModel.fromMap(Map<String, dynamic> map) {
+    return VersesResponseModel(
+      verses: (map['verses'] as List<dynamic>?)
+              ?.map((x) => VerseModel.fromMap(x as Map<String, dynamic>))
+              .toList() ??
+          [], // Default empty list
+      pagination: PaginationModel.fromMap(map['pagination'] as Map<String, dynamic>),
     );
   }
 }
