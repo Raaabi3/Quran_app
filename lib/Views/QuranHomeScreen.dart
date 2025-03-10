@@ -19,7 +19,13 @@ class _QuranHomeScreenState extends State<QuranHomeScreen> {
     super.initState();
     controller = QuranHomeScreenController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchWithRetry(() => Provider.of<ChaptersProvider>(context, listen: false).fetchChapters());
+      controller.fetchWithRetry(
+        () =>
+            Provider.of<ChaptersProvider>(
+              context,
+              listen: false,
+            ).fetchChapters(),
+      );
     });
   }
 
@@ -28,55 +34,143 @@ class _QuranHomeScreenState extends State<QuranHomeScreen> {
     final versesProvider = Provider.of<VersesProvider>(context);
     final chaptersProvider = Provider.of<ChaptersProvider>(context);
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => chaptersProvider.fetchChapters(),
-        child: const Icon(Icons.refresh),
-      ),
-      appBar: AppBar(title: const Text('Quran App')),
-      drawer: Drawer(
-        child: Consumer<QuranHomeScreenController>(
-          builder: (context, controller, child) {
-            return ListView.builder(
-              itemCount: chaptersProvider.chaptersModel.chapters.length,
-              itemBuilder: (context, index) {
-                final chapter = chaptersProvider.chaptersModel.chapters[index];
-                return ListTile(
-                  onTap: () {
-                    versesProvider.fetchVerseByKey(chapter.pages[0], controller);
-                  },
-                  title: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          chapter.nameArabic + " verse:" + chapter.pages.toString() ??
-                              'No chapter name',
-                        ),
-                      ),
-                      
-                    ],
-                  ),
-                );
-              },
-            );
-          },
+    return Container(
+      decoration: BoxDecoration(
+    image: DecorationImage(
+      image: AssetImage("assets/images/Quranborder.jpg",),
+      fit: BoxFit.cover,
+    ),
+  ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+      
+          child: const Icon(Icons.refresh),
         ),
-      ),
-      body: Consumer<QuranHomeScreenController>(
-        builder: (context, controller, child) {
-          return (versesProvider.isLoadingVerses || controller.isRetrying)
-              ? const Center(child: CircularProgressIndicator()) 
-              : (versesProvider.verseskeymodel == null
-                  ? const Center(child: Text("No Data Yet"))
-                  : ListView.builder(
-                      itemCount: versesProvider.verseskeymodel!.verseKeyModel.length,
-                      itemBuilder: (context, index) {
-                        final verse =
-                            versesProvider.verseskeymodel!.verseKeyModel[index];
-                        return ListTile(title: Text(verse.text_imlaei));
-                      },
-                    ));
-        },
+        appBar: AppBar(title: const Text('Quran App')),
+        drawer: Drawer(
+          child: Consumer<QuranHomeScreenController>(
+            builder: (context, controller, child) {
+              return ListView.builder(
+                itemCount: chaptersProvider.chaptersModel.chapters.length,
+                itemBuilder: (context, index) {
+                  final chapter = chaptersProvider.chaptersModel.chapters[index];
+                  return ListTile(
+                    onTap: () {
+                      versesProvider.fetchVerseByKey(
+                        chapter.pages[0],
+                        controller,
+                      );
+                      chaptersProvider.setSelectedchapter(index);
+                    },
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            chapter.nameArabic +
+                                    " verse:" +
+                                    chapter.pages.toString() ??
+                                'No chapter name',
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: Consumer<QuranHomeScreenController>(
+            builder: (context, controller, child) {
+              return (versesProvider.isLoadingVerses || controller.isRetrying)
+                  ? const Center(child: CircularProgressIndicator())
+                  : (versesProvider.verseskeymodel == null
+                      ? const Center(child: Text("No Data Yet"))
+                      : SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Container(
+                              child: Column(
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      chaptersProvider
+                                          .chaptersModel
+                                          .chapters[chaptersProvider.selectedchapter]
+                                          .nameArabic,
+                                      style: TextStyle(
+                                        fontFamily: "Arabi2",
+                                        fontSize: 40,
+                                  
+                                      ),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: chaptersProvider.selectedchapter ==  0 ? null : Image.asset("assets/images/bismillah.png",scale: 6,)
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Wrap(
+                                    alignment: WrapAlignment.start,
+                                    children: [
+                                      for (final verse
+                                          in versesProvider
+                                              .verseskeymodel!
+                                              .verseKeyModel) ...[
+                                        Text(
+                                          verse.text_imlaei,
+                                          style: TextStyle(
+                                            fontFamily: "Arabi2",
+                                            fontSize: 30,
+                                          ),
+                                        ),
+                                        Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Text(
+                                              "۝",
+                                              style: TextStyle(
+                                                fontFamily: "Arabi2",
+                                                fontSize: 24,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Positioned(
+                                              child: Directionality(
+                                                textDirection: TextDirection.ltr,
+                                                child: Text(
+                                                  "${verse.verseKey.toString().split(":")[1]}",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ));
+            },
+          ),
+        ),
       ),
     );
   }

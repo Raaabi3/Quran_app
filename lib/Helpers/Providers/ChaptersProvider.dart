@@ -6,6 +6,14 @@ import '../../Models/ChaptersModel.dart';
 
 class ChaptersProvider with ChangeNotifier {
   ChaptersModel chaptersModel = ChaptersModel(chapters: []);
+  int? _Selectedchapter ;
+
+  get selectedchapter => _Selectedchapter;
+
+  void setSelectedchapter(chapter){
+    _Selectedchapter = chapter;
+    notifyListeners();
+  }
 
   Future<void> fetchChapters() async {
     try {
