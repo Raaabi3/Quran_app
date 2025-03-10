@@ -1,63 +1,43 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:quran_app/Models/VerseModel.dart'; 
-import 'package:quran_app/Models/TranslationModel.dart';
+import 'package:quran_app/Models/VersesKeyModel.dart';
 import 'package:quran_app/Services/FetchVerseByKey.dart';
-import '../../Models/TafsirModel.dart';
-import '../../Models/VerseKeyModel.dart';
-import '../../Services/FetchVerseByPageService.dart'; 
+
+import '../QuranHomeScreenController.dart';
 
 class VersesProvider with ChangeNotifier {
-  VerseModel? verse;
-  List<TranslationModel> translations = [];
-  List<TafsirModel> tafsirs = [];
+  Verseskeymodel? verseskeymodel;
+  bool _isLoadingVerses = false;
+  String? _verseErrorMessage;
 
-  VerseKeyModel verseKeyModel = VerseKeyModel(
-    id: null,
-    verseKey: '',
-    text_imlaei: '',
-  );
+  bool get isLoadingVerses => _isLoadingVerses;
+  String? get verseErrorMessage => _verseErrorMessage;
 
-  Future<void> fetchVerseByKey(String key) async{
-    try {
-     final response = await FetchVersesByKeyService(key);  
-      if (response.statusCode == 200) {
-        print("success");
+  Future<void> fetchVerseByKey(int page, QuranHomeScreenController controller) async {
+    await controller.fetchWithRetry(() async {
+      try {
+        _isLoadingVerses = true;
+        _verseErrorMessage = null;
+        notifyListeners();
+
+        final response = await FetchVersesByKeyService(pagenumber: page);
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
+
         if (jsonData.containsKey('verses')) {
-          final verseData = jsonData['verses'][0];  
-          verseKeyModel = VerseKeyModel.fromMap(verseData);  
+          verseskeymodel = Verseskeymodel.fromMap(jsonData);
           notifyListeners();
         } else {
-          debugPrint('Error: "verses" key not found in response.');
+          throw Exception('Error: "Verses" key not found in response.');
         }
-      } else {
-        debugPrint('Failed to fetch verse: ${response.statusCode}');
+      } catch (e) {
+        debugPrint('Error fetching verses: $e');
+        _verseErrorMessage = 'Failed to load verses: $e';
+        notifyListeners();
+        throw e;
+      } finally {
+        _isLoadingVerses = false;
+        notifyListeners();
       }
-    } catch (e) {
-      debugPrint('Error fetching verse: $e');
-    }
-}
-
-  Future<void> fetchVersesByPage(int page) async {
-    try {
-      final response = await FetchVersesByPageService(page);
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
-        if (jsonData.containsKey('verses') && (jsonData['verses'] as List).isNotEmpty) {
-          final verseData = jsonData['verses'][0];  
-          verse = VerseModel.fromMap(verseData);
-          translations = (verseData['translations'] as List?)?.map((data) => TranslationModel.fromMap(data)).toList() ?? [];
-          tafsirs = (verseData['tafsirs'] as List?)?.map((data) => TafsirModel.fromMap(data)).toList() ?? [];
-          notifyListeners();
-        } else {
-          debugPrint('Error: "verses" key not found or empty in response.');
-        }
-      } else {
-        debugPrint('Failed to fetch verse: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('Error fetching verse: $e');
-    }
+    });
   }
 }

@@ -6,7 +6,7 @@ class Apilinks {
   static const String languages = "$baseurl/resources/languages";
   static String verses(int page) => "$baseurl/verses/by_page/$page";
   static const String chapters = "$baseurl/chapters";
-  static const String verse = "$baseurl/quran/verses/imlaei?verse_key=";
+  static const String verse = "$baseurl/quran/verses/imlaei";
 
 
 
