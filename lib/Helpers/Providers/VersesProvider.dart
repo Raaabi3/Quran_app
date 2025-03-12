@@ -9,17 +9,26 @@ class VersesProvider with ChangeNotifier {
   Verseskeymodel? verseskeymodel;
   bool _isLoadingVerses = false;
   String? _verseErrorMessage;
-
   bool get isLoadingVerses => _isLoadingVerses;
   String? get verseErrorMessage => _verseErrorMessage;
 
-  Future<void> fetchVerseByKey(int page, QuranHomeScreenController controller) async {
+  int? _page;
+
+  get page => _page;
+  void setPage(page) {
+    _page = page;
+    notifyListeners();
+  }
+
+  Future<void> fetchVerseByKey(
+    int page,
+    QuranHomeScreenController controller,
+  ) async {
     await controller.fetchWithRetry(() async {
       try {
         _isLoadingVerses = true;
         _verseErrorMessage = null;
         notifyListeners();
-
         final response = await FetchVersesByKeyService(pagenumber: page);
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
 

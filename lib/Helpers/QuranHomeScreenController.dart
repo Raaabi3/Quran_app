@@ -3,9 +3,16 @@ import 'package:flutter/material.dart';
 class QuranHomeScreenController with ChangeNotifier {
   bool _isRetrying = false;
   String? _errorMessage;
-
   bool get isRetrying => _isRetrying;
   String? get errorMessage => _errorMessage;
+  bool _isSeacrching = false;
+
+  bool get isSearching => _isSeacrching;
+  void searchingState(state){
+    _isSeacrching = state;
+    notifyListeners();
+  }
+
 
   Future<void> fetchWithRetry(Future<void> Function() fetchFunction) async {
     const int maxRetries = 5;

@@ -6,11 +6,12 @@ import '../../Models/ChaptersModel.dart';
 
 class ChaptersProvider with ChangeNotifier {
   ChaptersModel chaptersModel = ChaptersModel(chapters: []);
-  int? _Selectedchapter ;
+  int? _Selectedchapter;
+
 
   get selectedchapter => _Selectedchapter;
 
-  void setSelectedchapter(chapter){
+  void setSelectedchapter(chapter) {
     _Selectedchapter = chapter;
     notifyListeners();
   }
@@ -33,7 +34,7 @@ class ChaptersProvider with ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error fetching Chapters: $e');
-      throw e; 
+      throw e;
     }
   }
 }
