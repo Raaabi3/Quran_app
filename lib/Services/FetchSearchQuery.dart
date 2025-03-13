@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:quran_app/Helpers/Apilinks.dart';
 
-Future<http.Response> fetchVerseByKeyService(key) async {
+Future<http.Response> fetchSearchQueryService(text) async {
   final response = await http.get(
     headers: {
       "x-rapidapi-host": Apilinks.host,
@@ -9,7 +9,7 @@ Future<http.Response> fetchVerseByKeyService(key) async {
       "Accept": "application/json",
       "Content-Type": "application/json",
     },
-    Uri.parse(Apilinks.versebykey(key)+"?language=en"),
+    Uri.parse(Apilinks.query + Uri.encodeComponent(text) + "&language=en"),
   );
 
   if (response.statusCode == 200) {

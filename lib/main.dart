@@ -5,6 +5,7 @@ import 'package:quran_app/Helpers/Providers/VersesProvider.dart';
 import 'package:quran_app/Views/QuranHomeScreen.dart';
 import 'package:quran_app/Helpers/Providers/ChaptersProvider.dart';
 
+import 'Helpers/Providers/SearchQueryProvider.dart';
 import 'Helpers/QuranHomeScreenController.dart';
 
 void main() {
@@ -14,8 +15,10 @@ void main() {
         ChangeNotifierProvider(create: (_) => VersesProvider()),
         ChangeNotifierProvider(create: (_) => LanguagesProvider()),
         ChangeNotifierProvider(create: (_) => ChaptersProvider()),
-                ChangeNotifierProvider(create: (_) => QuranHomeScreenController()),
+        ChangeNotifierProvider(create: (_) => Searchqueryprovider()),
+        ChangeNotifierProvider(create: (_) => QuranHomeScreenController()),
 
+        
       ],
       child: const MyApp(),
     ),
@@ -30,7 +33,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
       home: const QuranHomeScreen(),
     );
   }

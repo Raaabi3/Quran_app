@@ -1,15 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
-import 'package:quran_app/Models/WordModel.dart';
+import 'SpecificWordModel.dart';
 
 class Resultsmodel {
-String? verse_key;
-int? verse_id;
-String? text;
-bool? highlighted;
-WordModel? words;
-String? translations;
+  String? verse_key;
+  int? verse_id;
+  String? text;
+  String? highlighted;
+  List<Specificwordmodel>? words; // Change to a List
+  List<String>? translations; // Change to a List
+
   Resultsmodel({
     this.verse_key,
     this.verse_id,
@@ -19,16 +17,19 @@ String? translations;
     this.translations,
   });
 
-
   factory Resultsmodel.fromMap(Map<String, dynamic> map) {
     return Resultsmodel(
-      verse_key: map['verse_key'] != null ? map['verse_key'] as String : null,
-      verse_id: map['verse_id'] != null ? map['verse_id'] as int : null,
-      text: map['text'] != null ? map['text'] as String : null,
-      highlighted: map['highlighted'] != null ? map['highlighted'] as bool : null,
-      words: map['words'] != null ? WordModel.fromMap(map['words'] as Map<String,dynamic>) : null,
-      translations: map['translations'] != null ? map['translations'] as String : null,
+      verse_key: map['verse_key'],
+      verse_id: map['verse_id'],
+      text: map['text'],
+      highlighted: map['highlighted'],
+      words: map['words'] != null
+          ? List<Specificwordmodel>.from(
+              map['words'].map((x) => Specificwordmodel.fromMap(x)))
+          : [],
+      translations: map['translations'] != null
+          ? List<String>.from(map['translations'])
+          : [],
     );
   }
-
 }

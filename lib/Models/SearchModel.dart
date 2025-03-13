@@ -1,13 +1,12 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
+import 'ResultsModel.dart';
 
-import 'package:quran_app/Models/ResultsModel.dart';
 class Searchmodel {
-String? query;
-int? total_results;
-int? current_page;
-int? total_pages;
-Resultsmodel? results;
+  String? query;
+  int? total_results;
+  int? current_page;
+  int? total_pages;
+  List<Resultsmodel>? results; // Change this to a List
+
   Searchmodel({
     this.query,
     this.total_results,
@@ -17,13 +16,20 @@ Resultsmodel? results;
   });
 
   factory Searchmodel.fromMap(Map<String, dynamic> map) {
+    if (!map.containsKey("search")) {
+      throw Exception("Missing 'search' key in response");
+    }
+
+    final searchData = map["search"]; // Extract the "search" object
     return Searchmodel(
-      query: map['query'] != null ? map['query'] as String : null,
-      total_results: map['total_results'] != null ? map['total_results'] as int : null,
-      current_page: map['current_page'] != null ? map['current_page'] as int : null,
-      total_pages: map['total_pages'] != null ? map['total_pages'] as int : null,
-      results: map['results'] != null ? Resultsmodel.fromMap(map['results'] as Map<String,dynamic>) : null,
+      query: searchData['query'] ?? "",
+      total_results: searchData['total_results'],
+      current_page: searchData['current_page'],
+      total_pages: searchData['total_pages'],
+      results: searchData['results'] != null
+          ? List<Resultsmodel>.from(
+              searchData['results'].map((x) => Resultsmodel.fromMap(x)))
+          : [],
     );
   }
-
 }

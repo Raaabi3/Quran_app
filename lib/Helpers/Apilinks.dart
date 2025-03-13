@@ -7,6 +7,10 @@ class Apilinks {
   static String verses(int page) => "$baseurl/verses/by_page/$page";
   static const String chapters = "$baseurl/chapters";
   static const String verse = "$baseurl/quran/verses/imlaei";
+  static const String query = "$baseurl/search?q=";
+  static String versebykey(String key) => "$baseurl/verses/by_key/$key";
+
+
 
 
 

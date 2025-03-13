@@ -16,6 +16,26 @@ class ChaptersProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
+  // Inside ChaptersProvider class
+int getChapterIndexByPage(int page) {
+  if (chaptersModel.chapters.isEmpty || page < 1) return 0; // Default to first chapter if invalid
+  for (int i = 0; i < chaptersModel.chapters.length; i++) {
+    final currentChapter = chaptersModel.chapters[i];
+    if (i == chaptersModel.chapters.length - 1) {
+      if (page >= currentChapter.pages[0]) {
+        return i;
+      }
+    } else {
+      final nextChapter = chaptersModel.chapters[i + 1];
+      if (page >= currentChapter.pages[0] && page < nextChapter.pages[0]) {
+        return i;
+      }
+    }
+  }
+  return 0; // Default to first chapter if no match
+}
+
   Future<void> fetchChapters() async {
     try {
       final response = await fetchChaptersService();
